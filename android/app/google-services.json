@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "538635595986",
+    "project_id": "eltuvuse",
+    "storage_bucket": "eltuvuse.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538635595986:android:649b29d4a0ab13e927bd0b",
+        "android_client_info": {
+          "package_name": "com.highapp.eltuv_use"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538635595986-enlonte299l4tqtu96g5l0gub1kab3ld.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.highapp.eltuv_use",
+            "certificate_hash": "6ffbd18886fad9eeb032cc29e8770165b9c8c87b"
+          }
+        },
+        {
+          "client_id": "538635595986-rom1v54l8c2b8sh7r9358s4ttslu7hmm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTq1clyghvXHRe0f3tWmAqQDWPBFCOecQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538635595986-rom1v54l8c2b8sh7r9358s4ttslu7hmm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
