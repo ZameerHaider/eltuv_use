@@ -1,5 +1,6 @@
 import 'package:eltuv_use/Data/response/HomeResponse.dart';
 import 'package:eltuv_use/Pages/Product_details_screen.dart';
+import 'package:eltuv_use/Pages/trackorder/trackorder.dart';
 import 'package:flutter/material.dart';
 
 import '../AppColors.dart';
@@ -40,6 +41,48 @@ class _ProductScreenState extends State<ProductScreen> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: colorWhite,
+      floatingActionButton: Padding(
+        padding:  EdgeInsets.only(left: size.width*0.07),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Color(0xffC70039),
+            borderRadius: BorderRadius.circular(10)
+          ),
+          height: size.height*0.09,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: size.width*0.02),
+                child: Column(
+                  mainAxisAlignment:MainAxisAlignment.center,
+                  children: [
+                    Text('0 items',style: TextStyle(color: Colors.grey),),
+                    SizedBox(height: size.height*0.01,),
+                    Text('\$00.00',style: TextStyle(color: Colors.white),),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  Text('View cart',style: TextStyle(color: Colors.white),),
+                  FloatingActionButton(
+                      onPressed: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => trackorder()),
+                        );
+                      },
+                      backgroundColor:Color(0xffC70039) ,
+                      elevation: 0,
+                      child: Icon(Icons.chevron_right,color: Colors.white,))
+                ],
+              ),
+
+            ],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Stack(
