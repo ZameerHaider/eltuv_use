@@ -1,3 +1,4 @@
+import 'package:eltuv_use/Data/Utils/AppUtils.dart';
 import 'package:eltuv_use/Data/response/HomeResponse.dart';
 import 'package:eltuv_use/Pages/Cart_screen.dart';
 import 'package:eltuv_use/Widget/custom_button.dart';
@@ -14,6 +15,13 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  List<CollectionProduct> cartItemsList = [];
+
+  void updatecart(CollectionProduct product) {
+    cartItemsList.add(product);
+    print(cartItemsList.length);
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -199,7 +207,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       isTitleBold: true,
                       titleColor: colorgrey,
                       prefixicon: "images/add.png",
-                      onPress: () {},
+                      onPress: () {
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) => CartScreen(
+                        //           collectionProduct: cartItemsList,
+                        //         )));
+                      },
                     ),
                     SizedBox(
                       height: size.height * 0.02,
@@ -212,8 +225,26 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       prefixicon: "images/addw.png",
                       postFixText: "\$" + widget.product.price,
                       onPress: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CartScreen()));
+                        if (cartItemsList.length < 1) {
+                          updatecart(widget.product);
+                        } else {
+                          final snackBar = SnackBar(
+                            content: const Text('Item already exits in cart'),
+                            action: SnackBarAction(
+                              label: 'Remove',
+                              onPressed: () {
+                                cartItemsList.removeWhere((element) =>
+                                    element.id == widget.product.id);
+                              },
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+
+                        // Navigator.of(context).push(MaterialPageRoute(
+                        //     builder: (context) => CartScreen(
+                        //           collectionProduct: widget.product,
+                        //         )));
                       },
                     )
                   ],
