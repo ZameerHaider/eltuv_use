@@ -1,4 +1,5 @@
 import 'package:eltuv_use/AppColors.dart';
+import 'package:eltuv_use/Data/response/HomeResponse.dart';
 import 'package:eltuv_use/Pages/order_screen.dart';
 import 'package:eltuv_use/Widget/PersonInput.dart';
 import 'package:eltuv_use/Widget/customTextField.dart';
@@ -7,13 +8,22 @@ import 'package:eltuv_use/utilities/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class CartScreen extends StatefulWidget {
-  CartScreen({Key key}) : super(key: key);
+  Map<String, CollectionProduct> collectionProduct;
+  CartScreen({this.collectionProduct});
 
   @override
   _CartScreenState createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
+  List<CollectionProduct> cartProductsList = [];
+
+  // @override
+  // void initState() {
+  //   cartProductsList.add(widget.collectionProduct);
+  //   super.initState();
+  // }
+
   bool value1 = false;
   bool value2 = false;
   final commentController = TextEditingController();
@@ -40,293 +50,171 @@ class _CartScreenState extends State<CartScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: size.width * 0.02),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                      size.width * 0.034,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(1, 0), // changes position of shadow
-                      ),
-                    ]),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(
-                          size.width * 0.034,
-                        ),
-                        bottomLeft: Radius.circular(
-                          size.width * 0.034,
-                        ),
-                      ),
-                      child: Image.network(
-                        "https://dummyimage.com/600x400/000/fff",
-                        height: size.width * 0.31,
-                        width: size.width * 0.31,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                    SizedBox(
-                      width: size.width * 0.025,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            height: size.width * 0.01,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Chef's Burger",
-                                style: TextStyle(
-                                  color: colorBlack,
-                                  fontSize: size.width * 0.039,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Spacer(),
-                              Container(
-                                height: size.width * 0.085,
-                                width: size.width * 0.085,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        size.width * 0.02),
-                                    color: colorText),
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.white,
-                                      size: size.width * 0.045,
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: size.width * 0.03,
-                              )
-                            ],
-                          ),
-                          // SizedBox(
-                          //   height: size.height * 0.01,
-                          // ),
-                          Container(
-                            width: size.width * 0.4,
-                            child: Text(
-                              "Bread, grilled meat, lettuce,Sandwich feature two saveryflame-grilled beef patties",
-                              style: TextStyle(
-                                color: colorBlack,
-                                fontSize: size.width * 0.029,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.01,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "\$" + "16.19",
-                                style: TextStyle(
-                                  color: colorPrimary,
-                                  fontSize: size.width * 0.039,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Spacer(),
-                              Container(
-                                height: size.width * 0.085,
-                                width: size.width * 0.1,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        size.width * 0.02),
-                                    color: colorText),
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                      size: size.width * 0.045,
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: size.width * 0.04,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: size.width * 0.01,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+              ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.collectionProduct.isEmpty
+                    ? 0
+                    : widget.collectionProduct.length,
+                itemBuilder: (context, index) => CartItem(
+                  prod: widget.collectionProduct[index],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Item Recommended",
-                  style: TextStyle(
-                    fontSize: size.width * 0.045,
-                    fontWeight: FontWeight.bold,
-                    color: colorBlack,
-                  ),
-                ),
+
+              SizedBox(
+                height: size.height * 0.02,
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: size.width * 0.02),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(
-                      size.width * 0.034,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(1, 0), // changes position of shadow
-                      ),
-                    ]),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(
-                          size.width * 0.034,
-                        ),
-                        bottomLeft: Radius.circular(
-                          size.width * 0.034,
-                        ),
-                      ),
-                      child: Image.network(
-                        "https://dummyimage.com/600x400/000/fff",
-                        height: size.width * 0.31,
-                        width: size.width * 0.31,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                    SizedBox(
-                      width: size.width * 0.025,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          SizedBox(
-                            height: size.width * 0.01,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Chef's Burger",
-                                style: TextStyle(
-                                  color: colorBlack,
-                                  fontSize: size.width * 0.039,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Spacer(),
-                              Container(
-                                height: size.width * 0.085,
-                                width: size.width * 0.085,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        size.width * 0.02),
-                                    color: colorText),
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.favorite_border,
-                                      color: Colors.white,
-                                      size: size.width * 0.045,
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: size.width * 0.03,
-                              )
-                            ],
-                          ),
-                          // SizedBox(
-                          //   height: size.height * 0.01,
-                          // ),
-                          Container(
-                            width: size.width * 0.4,
-                            child: Text(
-                              "Bread, grilled meat, lettuce,Sandwich feature two saveryflame-grilled beef patties",
-                              style: TextStyle(
-                                color: colorBlack,
-                                fontSize: size.width * 0.029,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.01,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "\$" + "16.19",
-                                style: TextStyle(
-                                  color: colorPrimary,
-                                  fontSize: size.width * 0.039,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Spacer(),
-                              Container(
-                                height: size.width * 0.085,
-                                width: size.width * 0.1,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                        size.width * 0.02),
-                                    color: colorText),
-                                child: Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                      size: size.width * 0.045,
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: size.width * 0.04,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: size.width * 0.01,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Text(
+              //     "Item Recommended",
+              //     style: TextStyle(
+              //       fontSize: size.width * 0.045,
+              //       fontWeight: FontWeight.bold,
+              //       color: colorBlack,
+              //     ),
+              //   ),
+              // ),
+              // Container(
+              //   margin: EdgeInsets.symmetric(vertical: size.width * 0.02),
+              //   decoration: BoxDecoration(
+              //       color: Colors.white,
+              //       borderRadius: BorderRadius.circular(
+              //         size.width * 0.034,
+              //       ),
+              //       boxShadow: [
+              //         BoxShadow(
+              //           color: Colors.grey.withOpacity(0.5),
+              //           spreadRadius: 2,
+              //           blurRadius: 5,
+              //           offset: Offset(1, 0), // changes position of shadow
+              //         ),
+              //       ]),
+              //   child: Row(
+              //     children: [
+              //       ClipRRect(
+              //         borderRadius: BorderRadius.only(
+              //           topLeft: Radius.circular(
+              //             size.width * 0.034,
+              //           ),
+              //           bottomLeft: Radius.circular(
+              //             size.width * 0.034,
+              //           ),
+              //         ),
+              //         child: Image.network(
+              //           "https://dummyimage.com/600x400/000/fff",
+              //           height: size.width * 0.345,
+              //           width: size.width * 0.32,
+              //           fit: BoxFit.cover,
+              //         ),
+              //       ),
+              //       SizedBox(
+              //         width: size.width * 0.025,
+              //       ),
+              //       Expanded(
+              //         child: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //           children: [
+              //             SizedBox(
+              //               height: size.width * 0.01,
+              //             ),
+              //             Row(
+              //               children: [
+              //                 Text(
+              //                   "Chef's Burger",
+              //                   style: TextStyle(
+              //                     color: colorBlack,
+              //                     fontSize: size.width * 0.039,
+              //                     fontWeight: FontWeight.bold,
+              //                   ),
+              //                 ),
+              //                 Spacer(),
+              //                 Container(
+              //                   height: size.width * 0.085,
+              //                   width: size.width * 0.085,
+              //                   decoration: BoxDecoration(
+              //                       borderRadius: BorderRadius.circular(
+              //                           size.width * 0.02),
+              //                       color: colorText),
+              //                   child: Center(
+              //                     child: IconButton(
+              //                       icon: Icon(
+              //                         Icons.favorite_border,
+              //                         color: Colors.white,
+              //                         size: size.width * 0.045,
+              //                       ),
+              //                       onPressed: () {},
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 SizedBox(
+              //                   width: size.width * 0.03,
+              //                 )
+              //               ],
+              //             ),
+              //             // SizedBox(
+              //             //   height: size.height * 0.01,
+              //             // ),
+              //             Container(
+              //               width: size.width * 0.4,
+              //               child: Text(
+              //                 "Bread, grilled meat, lettuce,Sandwich feature two saveryflame-grilled beef patties",
+              //                 style: TextStyle(
+              //                   color: colorBlack,
+              //                   fontSize: size.width * 0.029,
+              //                 ),
+              //               ),
+              //             ),
+              //             SizedBox(
+              //               height: size.height * 0.01,
+              //             ),
+              //             Row(
+              //               children: [
+              //                 Text(
+              //                   "\$" + "16.19",
+              //                   style: TextStyle(
+              //                     color: colorPrimary,
+              //                     fontSize: size.width * 0.039,
+              //                     fontWeight: FontWeight.bold,
+              //                   ),
+              //                 ),
+              //                 Spacer(),
+              //                 Container(
+              //                   height: size.width * 0.085,
+              //                   width: size.width * 0.1,
+              //                   decoration: BoxDecoration(
+              //                       borderRadius: BorderRadius.circular(
+              //                           size.width * 0.02),
+              //                       color: colorText),
+              //                   child: Center(
+              //                     child: IconButton(
+              //                       icon: Icon(
+              //                         Icons.add,
+              //                         color: Colors.white,
+              //                         size: size.width * 0.045,
+              //                       ),
+              //                       onPressed: () {},
+              //                     ),
+              //                   ),
+              //                 ),
+              //                 SizedBox(
+              //                   width: size.width * 0.04,
+              //                 ),
+              //               ],
+              //             ),
+              //             SizedBox(
+              //               height: size.width * 0.01,
+              //             ),
+              //           ],
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
               CustomTextField(
                 prefixIcon: Icon(
                   Icons.add,
@@ -698,5 +586,251 @@ class _CartScreenState extends State<CartScreen> {
         ),
       ),
     );
+  }
+}
+
+class CartItem extends StatefulWidget {
+  CollectionProduct prod;
+  int counter = 1;
+
+  CartItem({
+    this.prod,
+    this.counter,
+  });
+
+  @override
+  _CartItemState createState() => _CartItemState();
+}
+
+class _CartItemState extends State<CartItem> {
+  Map<String, CollectionProduct> cartItemsList = {};
+
+  void updatecart(CollectionProduct product) {
+    if (cartItemsList.containsKey(product.id)) {
+      cartItemsList.update(
+          product.id.toString(),
+          (value) => CollectionProduct(
+              id: value.id,
+              image: value.image,
+              collection: value.collection,
+              createdAt: value.createdAt,
+              description: value.description,
+              discount: value.discount,
+              optional: value.optional,
+              price: value.price,
+              productOptional: value.productOptional,
+              sId: value.sId,
+              quantity: value.quantity + 1,
+              title: value.title,
+              updatedAt: value.updatedAt));
+    } else {
+      cartItemsList.putIfAbsent(
+          product.id.toString(),
+          () => CollectionProduct(
+              id: product.id,
+              image: product.image,
+              collection: product.collection,
+              createdAt: product.createdAt,
+              description: product.description,
+              discount: product.discount,
+              optional: product.optional,
+              price: product.price,
+              productOptional: product.productOptional,
+              sId: product.sId,
+              quantity: 1,
+              title: product.title,
+              updatedAt: product.updatedAt));
+      print(cartItemsList.length);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: size.width * 0.02),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(
+            size.width * 0.034,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(1, 0), // changes position of shadow
+            ),
+          ]),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(
+                size.width * 0.034,
+              ),
+              bottomLeft: Radius.circular(
+                size.width * 0.034,
+              ),
+            ),
+            child: Image.network(
+              widget.prod.image,
+              height: size.width * 0.345,
+              width: size.width * 0.32,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(
+            width: size.width * 0.025,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  height: size.width * 0.01,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      widget.prod.title,
+                      style: TextStyle(
+                        color: colorBlack,
+                        fontSize: size.width * 0.039,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    Container(
+                      height: size.width * 0.085,
+                      width: size.width * 0.085,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(size.width * 0.02),
+                          color: colorText),
+                      child: Center(
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.favorite_border,
+                            color: Colors.white,
+                            size: size.width * 0.045,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: size.width * 0.03,
+                    )
+                  ],
+                ),
+                Container(
+                  width: size.width * 0.4,
+                  child: Text(
+                    widget.prod.description,
+                    style: TextStyle(
+                      color: colorBlack,
+                      fontSize: size.width * 0.029,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "\$" + widget.prod.price,
+                      style: TextStyle(
+                        color: colorPrimary,
+                        fontSize: size.width * 0.039,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    Row(
+                      children: [
+                        counterContainer(
+                            size,
+                            IconButton(
+                              icon: Icon(
+                                Icons.add,
+                                color: colorText,
+                                size: size.width * 0.045,
+                              ),
+                              onPressed: () {
+                                updatecart(widget.prod);
+                              },
+                            ),
+                            true),
+                        SizedBox(
+                          height: size.height * 0.01,
+                        ),
+                        Container(
+                          height: size.width * 0.085,
+                          width: size.width * 0.043,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.4),
+                          ),
+                          child: Center(
+                            child: Text(
+                              widget.prod.quantity.toString(),
+                              style: TextStyle(
+                                  fontSize: size.width * 0.034,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        // CustomTextField(
+                        //   textEditingController: widget.prodCountController,
+                        //   hint: counter.toString(),
+                        // ),
+                        counterContainer(
+                            size,
+                            IconButton(
+                              icon: Icon(
+                                Icons.remove,
+                                color: colorPrimary,
+                                size: size.width * 0.045,
+                              ),
+                              onPressed: () {
+                                // updateCounter(false);
+                              },
+                            ),
+                            false)
+                      ],
+                    ),
+                    SizedBox(
+                      width: size.width * 0.04,
+                    ),
+                  ],
+                ),
+                // SizedBox(
+                //   height: size.width * 0.01,
+                // ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Container counterContainer(Size size, Widget container, bool isAdd) {
+    return Container(
+        height: size.width * 0.085,
+        width: size.width * 0.08,
+        decoration: BoxDecoration(
+          borderRadius: isAdd
+              ? BorderRadius.only(
+                  topLeft: Radius.circular(size.width * 0.02),
+                  bottomLeft: Radius.circular(size.width * 0.02))
+              : BorderRadius.only(
+                  topRight: Radius.circular(size.width * 0.02),
+                  bottomRight: Radius.circular(size.width * 0.02)),
+          color: Colors.grey.withOpacity(0.4),
+        ),
+        child: container);
   }
 }

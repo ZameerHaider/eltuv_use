@@ -202,6 +202,7 @@ class CollectionProduct {
     this.createdAt,
     this.updatedAt,
     this.productOptional,
+    this.quantity = 1,
   });
 
   int id;
@@ -215,6 +216,7 @@ class CollectionProduct {
   String optional;
   DateTime createdAt;
   DateTime updatedAt;
+  int quantity;
   List<ProductOptional> productOptional;
 
   factory CollectionProduct.fromMap(Map<String, dynamic> json) =>

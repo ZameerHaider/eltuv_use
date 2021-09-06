@@ -74,6 +74,7 @@ class HelperFunctions {
             ),
             onPressed: () {
               Navigator.of(context).pop();
+
               onDone();
             },
           );
