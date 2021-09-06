@@ -30,7 +30,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 width: size.width,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(widget.product.image),
+                    image: NetworkImage(widget.product ==null ? "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg " :widget.product.image ),
                     fit: BoxFit.cover,
                   ),
                 ),

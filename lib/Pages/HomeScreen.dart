@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontSize: 14),
                   children: const <TextSpan>[
                     TextSpan(
-                        text: 'Home',
+                        text: ' Home',
                         style: TextStyle(
                             fontFamily: 'Raleway',
                             fontWeight: FontWeight.bold,
@@ -373,7 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       //               child: Row(
                       //             children: [
                       //               Text(
-                      //                 "apisnapshot.stores,",
+                      //                 "Promo",
                       //                 style: TextStyle(
                       //                     color: Colors.white,
                       //                     fontSize: 13,
@@ -384,9 +384,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       //     },
                       //   ),
                       // ),
-                      // SizedBox(
-                      //   height: size.height * 0.02,
-                      // ),
+                      SizedBox(
+                        height: size.height * 0.02,
+                      ),
                       listView(
                         storeList:
                             apisnapshot == null ? [] : apisnapshot.stores,

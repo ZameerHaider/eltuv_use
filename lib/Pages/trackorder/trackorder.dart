@@ -1,3 +1,6 @@
+import 'package:eltuv_use/Pages/Product_screen.dart';
+import 'package:eltuv_use/Pages/Reviews/ReviewsScreen.dart';
+import 'package:eltuv_use/Pages/order_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -242,8 +245,8 @@ class _trackorderState extends State<trackorder> {
           go(1);
         },
         onStepTapped: (index) {
-          if (index == 1) {
-            contactinfo();
+          if (index == 3) {
+
           }
 
           ddlog(index);

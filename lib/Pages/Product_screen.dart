@@ -1,5 +1,7 @@
 import 'package:eltuv_use/Data/response/HomeResponse.dart';
 import 'package:eltuv_use/Pages/Product_details_screen.dart';
+import 'package:eltuv_use/Pages/Reviews/ReviewsScreen.dart';
+import 'package:eltuv_use/Pages/order_screen.dart';
 import 'package:eltuv_use/Pages/trackorder/trackorder.dart';
 import 'package:flutter/material.dart';
 
