@@ -1,3 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:eltuv_use/Pages/Cart_screen.dart';
+import 'package:eltuv_use/managers/api_manager.dart';
+import 'package:eltuv_use/utilities/api_constants.dart';
+import 'package:eltuv_use/utilities/helper_functions.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 class HomeObject {
   HomeObject({
     this.message,
@@ -207,7 +217,7 @@ class CollectionProduct {
 
   int id;
   String sId;
-  Name collection;
+  String collection;
   String title;
   String price;
   String discount;
@@ -223,9 +233,7 @@ class CollectionProduct {
       CollectionProduct(
         id: json["id"] == null ? null : json["id"],
         sId: json["sID"] == null ? null : json["sID"],
-        collection: json["collection"] == null
-            ? null
-            : nameValues.map[json["collection"]],
+        collection: json["collection"] == null ? null : json["collection"],
         title: json["title"] == null ? null : json["title"],
         price: json["price"] == null ? null : json["price"],
         discount: json["discount"] == null ? null : json["discount"],
@@ -293,5 +301,87 @@ class EnumValues<T> {
       reverseMap = map.map((k, v) => new MapEntry(v, k));
     }
     return reverseMap;
+  }
+}
+
+class HomeProvider with ChangeNotifier {
+  HomeObject homeObject;
+  Response apisnapShot;
+
+  callAPIGetHome(BuildContext context) {
+    // this.setState(() {
+    //   isLoading = true;
+    // });
+
+    Map<String, dynamic> body = Map<String, dynamic>();
+
+    Map<String, String> header = Map<String, String>();
+
+    FocusScope.of(context).requestFocus(FocusNode());
+    log(jsonEncode(body));
+
+    ApiManager networkCal = ApiManager(APIConstants.home, body, false, header);
+
+    networkCal.callGetAPI(context).then((response) {
+      // log(jsonEncode(response));
+      print('Back from api');
+
+      // this.setState(() {
+      //   isLoading = false;
+      // });
+
+      bool status = response['status'];
+      if (status == true) {
+        homeObject = HomeObject.fromMap(response);
+        if (homeObject != null) {
+          apisnapShot = homeObject.response;
+        }
+      } else {
+        HelperFunctions.showAlert(
+          context: context,
+          header: "Eltuv",
+          widget: Text(response["message"]),
+          btnDoneText: "ok",
+          onDone: () {},
+          onCancel: () {},
+        );
+      }
+      notifyListeners();
+    });
+  }
+
+  List<CollectionProduct> cartItemsList = [];
+
+  void updatecart(CollectionProduct product, BuildContext context) {
+    if (cartItemsList.length < 4) {
+      final snackBars = SnackBar(
+        content: const Text('Item added in cart'),
+        action: SnackBarAction(
+          label: 'undo',
+          onPressed: () {
+            cartItemsList.removeWhere((element) => element.id == product.id);
+          },
+        ),
+      );
+      cartItemsList.add(product);
+      ScaffoldMessenger.of(context).showSnackBar(snackBars);
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => CartScreen(
+                collectionProduct: cartItemsList,
+              )));
+    } else {
+      final snackBar = SnackBar(
+        content: const Text('Item already exits in cart'),
+        action: SnackBarAction(
+          label: 'Remove',
+          onPressed: () {
+            cartItemsList.removeWhere((element) => element.id == product.id);
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    //
+    notifyListeners();
   }
 }

@@ -15,6 +15,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:provider/provider.dart';
+
 import '../AppColors.dart';
 import '../Fragments/SearchServices.dart';
 
@@ -38,62 +40,72 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isLoading = true;
+  // bool isLoading = true;
 
   HomeObject homeObject;
   Response apisnapshot;
+  bool isLoading = false;
 
   @override
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _callAPIGetHome(context);
+      setState(() {
+        isLoading = true;
+      });
+      Provider.of<HomeProvider>(context, listen: false).callAPIGetHome(context);
+
+      setState(() {
+        isLoading = false;
+      });
     });
     super.initState();
   }
 
-  _callAPIGetHome(BuildContext context) {
-    this.setState(() {
-      isLoading = true;
-    });
+  // _callAPIGetHome(BuildContext context) {
+  //   this.setState(() {
+  //     isLoading = true;
+  //   });
 
-    Map<String, dynamic> body = Map<String, dynamic>();
+  //   Map<String, dynamic> body = Map<String, dynamic>();
 
-    Map<String, String> header = Map<String, String>();
+  //   Map<String, String> header = Map<String, String>();
 
-    FocusScope.of(context).requestFocus(FocusNode());
-    log(jsonEncode(body));
+  //   FocusScope.of(context).requestFocus(FocusNode());
+  //   log(jsonEncode(body));
 
-    ApiManager networkCal = ApiManager(APIConstants.home, body, false, header);
+  //   ApiManager networkCal = ApiManager(APIConstants.home, body, false, header);
 
-    networkCal.callGetAPI(context).then((response) {
-      // log(jsonEncode(response));
-      print('Back from api');
+  //   networkCal.callGetAPI(context).then((response) {
+  //     // log(jsonEncode(response));
+  //     print('Back from api');
 
-      this.setState(() {
-        isLoading = false;
-      });
+  //     this.setState(() {
+  //       isLoading = false;
+  //     });
 
-      bool status = response['status'];
-      if (status == true) {
-        homeObject = HomeObject.fromMap(response);
-        if (homeObject != null) {
-          apisnapshot = homeObject.response;
-        }
-      } else {
-        HelperFunctions.showAlert(
-          context: context,
-          header: "Eltuv",
-          widget: Text(response["message"]),
-          btnDoneText: "ok",
-          onDone: () {},
-          onCancel: () {},
-        );
-      }
-    });
-  }
+  //     bool status = response['status'];
+  //     if (status == true) {
+  //       homeObject = HomeObject.fromMap(response);
+  //       if (homeObject != null) {
+  //         apisnapshot = homeObject.response;
+  //       }
+  //     } else {
+  //       HelperFunctions.showAlert(
+  //         context: context,
+  //         header: "Eltuv",
+  //         widget: Text(response["message"]),
+  //         btnDoneText: "ok",
+  //         onDone: () {},
+  //         onCancel: () {},
+  //       );
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    apisnapshot = Provider.of<HomeProvider>(context, listen: true).apisnapShot;
+    homeObject = Provider.of<HomeProvider>(context, listen: true).homeObject;
     var size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
@@ -209,20 +221,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: size.height * 0.01,
                       ),
                       CarouselSlider(
-                          items: apisnapshot.sliders
-                              .map(
-                                (e) => Container(
-                                  margin: EdgeInsets.all(size.height * 0.01),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: NetworkImage(e.image),
-                                      fit: BoxFit.cover,
+                          items: apisnapshot == null
+                              ? []
+                              : apisnapshot.sliders
+                                  .map(
+                                    (e) => Container(
+                                      margin:
+                                          EdgeInsets.all(size.height * 0.01),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        image: DecorationImage(
+                                          image: NetworkImage(e.image),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                                  )
+                                  .toList(),
                           options: CarouselOptions(
                             autoPlay: true,
                             aspectRatio: 16 / 7,
@@ -268,8 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: MediaQuery.of(context).size.height * 0.14,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: apisnapshot.services == null ||
-                                  apisnapshot == null
+                          itemCount: apisnapshot == null
                               ? 0
                               : apisnapshot.services.length,
                           itemBuilder: (BuildContext context, int index) {
@@ -373,7 +388,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       //   height: size.height * 0.02,
                       // ),
                       listView(
-                        storeList: apisnapshot.stores ?? [],
+                        storeList:
+                            apisnapshot == null ? [] : apisnapshot.stores,
                       )
                     ],
                   ),

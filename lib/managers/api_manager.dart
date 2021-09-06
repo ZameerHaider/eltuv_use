@@ -17,9 +17,11 @@ class ApiManager {
   String name = "";
   Map<String, dynamic> apiBody = Map<String, dynamic>();
   Map<String, String> apiHeader = Map<String, String>();
+  String rawBody;
 
   ApiManager(String name, Map<String, dynamic> apiBody, bool addToken,
-      Map<String, String> header1) {
+      Map<String, String> header1,
+      {this.rawBody}) {
     this.name = name;
     this.apiBody = apiBody;
     this.apiHeader = header1;
@@ -47,7 +49,8 @@ class ApiManager {
       try {
         final responseOfAPI = await http
             .post(Uri.parse(url123),
-                body: jsonEncode(apiBody), headers: apiHeader)
+                body: rawBody != null ? rawBody : jsonEncode(apiBody),
+                headers: apiHeader)
             .timeout(const Duration(seconds: 15), onTimeout: () {
           // Time has run out, do what you wanted to do.
           return HelperFunctions.showAlert(
