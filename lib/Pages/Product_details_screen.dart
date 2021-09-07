@@ -30,7 +30,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 width: size.width,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(widget.product ==null ? "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg " :widget.product.image ),
+                    image: NetworkImage(widget.product.image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -221,54 +221,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       onPress: () {
                         Provider.of<HomeProvider>(context, listen: false)
                             .updatecart(widget.product, context);
-                        // if (Provider.of<HomeProvider>(context, listen: false)
-                        //         .cartItemsList
-                        //         .length <
-                        //     1) {
-                        //   Provider.of<HomeProvider>(context, listen: false)
-                        //       .updatecart(widget.product);
 
-                        //   final snackBars = SnackBar(
-                        //     content: const Text('Item added in cart'),
-                        //     action: SnackBarAction(
-                        //       label: 'undo',
-                        //       onPressed: () {
-                        //         Provider.of<HomeProvider>(context,
-                        //                 listen: false)
-                        //             .cartItemsList
-                        //             .removeWhere((element) =>
-                        //                 element.id == widget.product.id);
-                        //       },
-                        //     ),
-                        //   );
-                        //   ScaffoldMessenger.of(context).showSnackBar(snackBars);
-                        // } else {
-                        //   final snackBar = SnackBar(
-                        //     content: const Text('Item already exits in cart'),
-                        //     action: SnackBarAction(
-                        //       label: 'Remove',
-                        //       onPressed: () {
-                        //         Provider.of<HomeProvider>(context,
-                        //                 listen: false)
-                        //             .cartItemsList
-                        //             .removeWhere((element) =>
-                        //                 element.id == widget.product.id);
-                        //       },
-                        //     ),
-                        //   );
-                        //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        // }
                         print(Provider.of<HomeProvider>(context, listen: false)
                             .cartItemsList
                             .length);
-
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CartScreen(
-                                  collectionProduct: Provider.of<HomeProvider>(
-                                          context,
-                                          listen: false)
-                                      .cartItemsList,
-                                )));
                       },
                     )
                   ],

@@ -2,16 +2,16 @@ import 'package:eltuv_use/Data/response/HomeResponse.dart';
 
 import 'package:eltuv_use/Widget/counterContainer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import '../AppColors.dart';
+import 'package:provider/provider.dart';
 
 class CartItem extends StatefulWidget {
   CollectionProduct prod;
-  int counter = 1;
 
   CartItem({
     this.prod,
-    this.counter,
   });
 
   @override
@@ -19,46 +19,11 @@ class CartItem extends StatefulWidget {
 }
 
 class _CartItemState extends State<CartItem> {
-  Map<String, CollectionProduct> cartItemsList = {};
-
-  void updatecart(CollectionProduct product) {
-    if (cartItemsList.containsKey(product.id)) {
-      cartItemsList.update(
-          product.id.toString(),
-          (value) => CollectionProduct(
-              id: value.id,
-              image: value.image,
-              collection: value.collection,
-              createdAt: value.createdAt,
-              description: value.description,
-              discount: value.discount,
-              optional: value.optional,
-              price: value.price,
-              productOptional: value.productOptional,
-              sId: value.sId,
-              quantity: value.quantity + 1,
-              title: value.title,
-              updatedAt: value.updatedAt));
-    } else {
-      cartItemsList.putIfAbsent(
-          product.id.toString(),
-          () => CollectionProduct(
-              id: product.id,
-              image: product.image,
-              collection: product.collection,
-              createdAt: product.createdAt,
-              description: product.description,
-              discount: product.discount,
-              optional: product.optional,
-              price: product.price,
-              productOptional: product.productOptional,
-              sId: product.sId,
-              quantity: 1,
-              title: product.title,
-              updatedAt: product.updatedAt));
-      print(cartItemsList.length);
-    }
-  }
+  // @override
+  // void initState() {
+  //   widget.prod = new CollectionProduct();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +141,12 @@ class _CartItemState extends State<CartItem> {
                                 size: size.width * 0.045,
                               ),
                               onPressed: () {
-                                updatecart(widget.prod);
+                                Provider.of<HomeProvider>(
+                                  context,
+                                  listen: false,
+                                ).incrementProductCount(
+                                  product: widget.prod,
+                                );
                               },
                             ),
                             true),
@@ -191,7 +161,9 @@ class _CartItemState extends State<CartItem> {
                           ),
                           child: Center(
                             child: Text(
-                              widget.prod.quantity.toString(),
+                              Provider.of<HomeProvider>(context, listen: true)
+                                  .totalQuantity
+                                  .toString(),
                               style: TextStyle(
                                   fontSize: size.width * 0.034,
                                   fontWeight: FontWeight.bold),
@@ -211,7 +183,15 @@ class _CartItemState extends State<CartItem> {
                                 size: size.width * 0.045,
                               ),
                               onPressed: () {
-                                // updateCounter(false);
+                                SchedulerBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  Provider.of<HomeProvider>(
+                                    context,
+                                    listen: false,
+                                  ).decrementProductCount(
+                                    product: widget.prod,
+                                  );
+                                });
                               },
                             ),
                             false)

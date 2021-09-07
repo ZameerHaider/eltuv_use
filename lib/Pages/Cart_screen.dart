@@ -14,6 +14,7 @@ import 'package:eltuv_use/managers/api_manager.dart';
 import 'package:eltuv_use/utilities/api_constants.dart';
 import 'package:eltuv_use/utilities/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartScreen extends StatefulWidget {
   List<CollectionProduct> collectionProduct;
@@ -25,11 +26,16 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   String userID = "";
+  int itemTotal;
   @override
   void initState() {
     super.initState();
     HelperFunctions.getFromPreference("firebaseUId")
         .then((value) => userID = value);
+
+    widget.collectionProduct.forEach((element) {
+      itemTotal = int.parse(element.price);
+    });
   }
 
   _btnActionPlaceOrder(BuildContext context) {
@@ -65,7 +71,7 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
-  bool value1 = false;
+  bool value1 = true;
   bool value2 = false;
   final commentController = TextEditingController();
   final promoController = TextEditingController();
@@ -469,11 +475,6 @@ class _CartScreenState extends State<CartScreen> {
                         color: colorBlack,
                       ),
                     ),
-                    Icon(
-                      Icons.mode_edit,
-                      color: colorText,
-                      size: size.width * 0.065,
-                    )
                   ],
                 ),
               ),
@@ -610,7 +611,9 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                       Text(
-                        "15",
+                        Provider.of<HomeProvider>(context)
+                            .updateItemTotalPrice()
+                            .toString(),
                         style: TextStyle(
                           fontSize: size.width * 0.034,
                           fontWeight: FontWeight.bold,

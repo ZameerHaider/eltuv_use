@@ -212,7 +212,7 @@ class CollectionProduct {
     this.createdAt,
     this.updatedAt,
     this.productOptional,
-    this.quantity = 1,
+    this.quantity = 0,
   });
 
   int id;
@@ -382,6 +382,51 @@ class HomeProvider with ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     //
+    notifyListeners();
+  }
+
+  int totalQuantity = 1;
+  int totalAmount = 0;
+
+  updateItemTotalPrice() {
+    cartItemsList.forEach((element) {
+      if (element.quantity <= 1) {
+        print(element.quantity);
+        print(cartItemsList.length);
+        print(element.price);
+        print("if case");
+        totalAmount = (cartItemsList.length * element.quantity) *
+            int.parse(element.price);
+      } else {
+        print("else case");
+        totalAmount = (cartItemsList.length - 1 + element.quantity) *
+            int.parse(element.price);
+      }
+    });
+
+    notifyListeners();
+    return totalAmount;
+  }
+
+  incrementProductCount({CollectionProduct product}) {
+    log("message");
+    totalQuantity = totalQuantity + 1;
+    product.quantity = totalQuantity;
+
+    log(totalQuantity.toString());
+
+    notifyListeners();
+  }
+
+  decrementProductCount({CollectionProduct product}) {
+    if (totalQuantity > 1) {
+      totalQuantity = totalQuantity - 1;
+      product.quantity = totalQuantity;
+      // updateItemTotalPrice();
+    }
+
+    print(totalQuantity);
+
     notifyListeners();
   }
 }
