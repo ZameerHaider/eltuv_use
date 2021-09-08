@@ -212,7 +212,7 @@ class CollectionProduct {
     this.createdAt,
     this.updatedAt,
     this.productOptional,
-    this.quantity = 0,
+    this.quantity = 1,
   });
 
   int id;
@@ -309,10 +309,6 @@ class HomeProvider with ChangeNotifier {
   Response apisnapShot;
 
   callAPIGetHome(BuildContext context) {
-    // this.setState(() {
-    //   isLoading = true;
-    // });
-
     Map<String, dynamic> body = Map<String, dynamic>();
 
     Map<String, String> header = Map<String, String>();
@@ -323,12 +319,7 @@ class HomeProvider with ChangeNotifier {
     ApiManager networkCal = ApiManager(APIConstants.home, body, false, header);
 
     networkCal.callGetAPI(context).then((response) {
-      // log(jsonEncode(response));
       print('Back from api');
-
-      // this.setState(() {
-      //   isLoading = false;
-      // });
 
       bool status = response['status'];
       if (status == true) {
@@ -351,11 +342,11 @@ class HomeProvider with ChangeNotifier {
   }
 
   List<CollectionProduct> cartItemsList = [];
-
   void updatecart(CollectionProduct product, BuildContext context) {
-    if (cartItemsList.length < 4) {
+    // Map<int, CollectionProduct> cartList = {};
+    if (cartItemsList.contains(product)) {
       final snackBars = SnackBar(
-        content: const Text('Item added in cart'),
+        content: const Text('Item already exists in cart'),
         action: SnackBarAction(
           label: 'undo',
           onPressed: () {
@@ -363,65 +354,56 @@ class HomeProvider with ChangeNotifier {
           },
         ),
       );
-      cartItemsList.add(product);
+
       ScaffoldMessenger.of(context).showSnackBar(snackBars);
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => CartScreen(
-                collectionProduct: cartItemsList,
-              )));
     } else {
+      cartItemsList.add(product);
       final snackBar = SnackBar(
-        content: const Text('Item already exits in cart'),
+        content: const Text('Item  added to cart'),
         action: SnackBarAction(
-          label: 'Remove',
+          label: 'view cart',
           onPressed: () {
-            cartItemsList.removeWhere((element) => element.id == product.id);
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => CartScreen(
+                      collectionProduct: cartItemsList,
+                    )));
           },
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-    //
+
     notifyListeners();
   }
 
   int totalQuantity = 1;
-  int totalAmount = 0;
 
   updateItemTotalPrice() {
-    cartItemsList.forEach((element) {
-      if (element.quantity <= 1) {
-        print(element.quantity);
-        print(cartItemsList.length);
-        print(element.price);
-        print("if case");
-        totalAmount = (cartItemsList.length * element.quantity) *
-            int.parse(element.price);
-      } else {
-        print("else case");
-        totalAmount = (cartItemsList.length - 1 + element.quantity) *
-            int.parse(element.price);
-      }
+    int totalAmount = 0;
+
+    cartItemsList.forEach((q) {
+      totalAmount += q.quantity * int.parse(q.price);
     });
 
+    log("total amount " + totalAmount.toString());
     notifyListeners();
     return totalAmount;
   }
 
   incrementProductCount({CollectionProduct product}) {
     log("message");
-    totalQuantity = totalQuantity + 1;
-    product.quantity = totalQuantity;
+    totalQuantity = product.quantity++;
+    // product.quantity = totalQuantity;
 
     log(totalQuantity.toString());
-
+    updateItemTotalPrice();
     notifyListeners();
   }
 
   decrementProductCount({CollectionProduct product}) {
     if (totalQuantity > 1) {
-      totalQuantity = totalQuantity - 1;
-      product.quantity = totalQuantity;
+      totalQuantity = product.quantity--;
+      // product.quantity = totalQuantity;
       // updateItemTotalPrice();
     }
 

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 class CartItem extends StatefulWidget {
   CollectionProduct prod;
+  VoidCallback incrementCallBack;
 
   CartItem({
     this.prod,
@@ -19,12 +20,6 @@ class CartItem extends StatefulWidget {
 }
 
 class _CartItemState extends State<CartItem> {
-  // @override
-  // void initState() {
-  //   widget.prod = new CollectionProduct();
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -141,6 +136,9 @@ class _CartItemState extends State<CartItem> {
                                 size: size.width * 0.045,
                               ),
                               onPressed: () {
+                                // setState(() {
+                                //   widget.prod.quantity++;
+                                // });
                                 Provider.of<HomeProvider>(
                                   context,
                                   listen: false,
@@ -161,9 +159,10 @@ class _CartItemState extends State<CartItem> {
                           ),
                           child: Center(
                             child: Text(
-                              Provider.of<HomeProvider>(context, listen: true)
-                                  .totalQuantity
-                                  .toString(),
+                              widget.prod.quantity.toString(),
+                              // Provider.of<HomeProvider>(context, listen: true)
+                              //     .totalQuantity
+                              //     .toString(),
                               style: TextStyle(
                                   fontSize: size.width * 0.034,
                                   fontWeight: FontWeight.bold),

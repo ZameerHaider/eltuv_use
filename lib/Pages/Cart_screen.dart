@@ -26,16 +26,12 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   String userID = "";
-  int itemTotal;
+
   @override
   void initState() {
     super.initState();
     HelperFunctions.getFromPreference("firebaseUId")
         .then((value) => userID = value);
-
-    widget.collectionProduct.forEach((element) {
-      itemTotal = int.parse(element.price);
-    });
   }
 
   _btnActionPlaceOrder(BuildContext context) {
@@ -106,9 +102,10 @@ class _CartScreenState extends State<CartScreen> {
           sID: int.parse(element.sId),
           cID: element.collection,
           pID: element.id,
-          quantity: 2,
+          quantity: element.quantity,
           optional: opt));
-      orderModel.totalPrice = int.parse(element.price);
+      orderModel.totalPrice = Provider.of<HomeProvider>(context, listen: false)
+          .updateItemTotalPrice();
       orderModel.discount = 20;
       orderModel.clientName = nameController.text;
       orderModel.clientAddress = addressConroller.text;
@@ -640,29 +637,29 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     ],
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Delivery Charge",
-                        style: TextStyle(
-                          fontSize: size.width * 0.034,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Text(
-                        "\$16.19",
-                        style: TextStyle(
-                          fontSize: size.width * 0.034,
-                          fontWeight: FontWeight.bold,
-                          color: colorBlack,
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.1,
-                      )
-                    ],
-                  ),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       "Delivery Charge",
+                  //       style: TextStyle(
+                  //         fontSize: size.width * 0.034,
+                  //         color: Colors.grey,
+                  //       ),
+                  //     ),
+                  //     Text(
+                  //       "\$16.19",
+                  //       style: TextStyle(
+                  //         fontSize: size.width * 0.034,
+                  //         fontWeight: FontWeight.bold,
+                  //         color: colorBlack,
+                  //       ),
+                  //     ),
+                  //     SizedBox(
+                  //       height: size.height * 0.1,
+                  //     )
+                  //   ],
+                  // ),
                 ],
               ),
               SizedBox(
