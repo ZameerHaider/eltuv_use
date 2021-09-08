@@ -1,3 +1,4 @@
+import 'package:eltuv_use/Data/response/HomeResponse.dart';
 import 'package:eltuv_use/utilities/helper_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'Data/Utils/AppConstants.dart';
 import 'HomeScreen.dart';
 import 'Pages/SignUp.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,14 +40,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("printing bool " + isLogin.toString());
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Eltuv',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<HomeProvider>(
+          create: (context) => HomeProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Eltuv',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: isLogin ? Home() : SignUp(),
       ),
-      home: isLogin ? Home() : SignUp(),
     );
   }
 }

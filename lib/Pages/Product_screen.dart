@@ -44,41 +44,55 @@ class _ProductScreenState extends State<ProductScreen> {
     return Scaffold(
       backgroundColor: colorWhite,
       floatingActionButton: Padding(
-        padding:  EdgeInsets.only(left: size.width*0.07),
+        padding: EdgeInsets.only(left: size.width * 0.07),
         child: Container(
           decoration: BoxDecoration(
               color: Color(0xffC70039),
-            borderRadius: BorderRadius.circular(10)
-          ),
-          height: size.height*0.09,
+              borderRadius: BorderRadius.circular(10)),
+          height: size.height * 0.09,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: size.width*0.02),
+                padding: EdgeInsets.symmetric(horizontal: size.width * 0.02),
                 child: Column(
-                  mainAxisAlignment:MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('0 items',style: TextStyle(color: Colors.grey),),
-                    SizedBox(height: size.height*0.01,),
-                    Text('\$00.00',style: TextStyle(color: Colors.white),),
+                    Text(
+                      '0 items',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.01,
+                    ),
+                    Text(
+                      '\$00.00',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
               Row(
                 children: [
-                  Text('View cart',style: TextStyle(color: Colors.white),),
+                  Text(
+                    'View cart',
+                    style: TextStyle(color: Colors.white),
+                  ),
                   FloatingActionButton(
-                      onPressed: (){
-
-
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => trackorder()),
+                        );
                       },
-                      backgroundColor:Color(0xffC70039) ,
+                      backgroundColor: Color(0xffC70039),
                       elevation: 0,
-                      child: Icon(Icons.chevron_right,color: Colors.white,))
+                      child: Icon(
+                        Icons.chevron_right,
+                        color: Colors.white,
+                      ))
                 ],
               ),
-
             ],
           ),
         ),
@@ -367,12 +381,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           ? 0
                           : collectionProducts.length,
                       itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ProductDetailsScreen(
-                                    product: collectionProducts[index],
-                                  )));
-                        },
+                        onTap: () {},
                         child: Container(
                           margin:
                               EdgeInsets.symmetric(vertical: size.width * 0.02),
@@ -507,7 +516,16 @@ class _ProductScreenState extends State<ProductScreen> {
                                                 color: Colors.white,
                                                 size: size.width * 0.045,
                                               ),
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProductDetailsScreen(
+                                                              product:
+                                                                  collectionProducts[
+                                                                      index],
+                                                            )));
+                                              },
                                             ),
                                           ),
                                         ),
@@ -540,7 +558,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget _category({text, image}) {
     var size = MediaQuery.of(context).size;
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
         children: [
           Image.asset(
