@@ -68,7 +68,7 @@ class _editprofileState extends State<editprofile> {
               padding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
               child: Align(
                   alignment: Alignment.bottomLeft,
-                  child: Text('Card Number')),
+                  child: Text('Address')),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01,),
             simpletextfield(hinttext: '+1 0000 000 000',),

@@ -1,7 +1,9 @@
 
+import 'package:eltuv_use/Pages/category.dart';
 import 'package:eltuv_use/Pages/payment.dart';
 import 'package:eltuv_use/Pages/profile/editprofile.dart';
 import 'package:eltuv_use/Pages/setting.dart';
+import 'package:eltuv_use/Pages/trackorder/myorder.dart';
 import 'package:eltuv_use/Widget/settinglist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +63,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
 
             } ,),
-            settinglist(inputtext: 'My Order',onTap:(){} ,),
+            settinglist(inputtext: 'My Order',onTap:(){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => myorder()),
+              );
+
+            } ,),
             settinglist(inputtext: 'Payments',onTap:(){
               Navigator.push(
                 context,
@@ -70,7 +78,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             } ,),
             settinglist(inputtext: 'Share',onTap:(){
-
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => category()),
+              );
 
 
             } ,),
