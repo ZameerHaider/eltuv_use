@@ -1,12 +1,12 @@
 import 'package:eltuv_use/Data/response/HomeResponse.dart';
+import 'package:eltuv_use/Pages/Cart_screen.dart';
 import 'package:eltuv_use/Pages/Product_details_screen.dart';
-import 'package:eltuv_use/Pages/Reviews/ReviewsScreen.dart';
-import 'package:eltuv_use/Pages/order_screen.dart';
-import 'package:eltuv_use/Pages/trackorder/trackorder.dart';
 import 'package:flutter/material.dart';
 
 import '../AppColors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProductScreen extends StatefulWidget {
   Store store;
@@ -37,9 +37,17 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   Color backgroudColor = Colors.white;
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // var pro = Provider.of<HomeProvider>(context, listen: false);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: colorWhite,
@@ -59,14 +67,21 @@ class _ProductScreenState extends State<ProductScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '0 items',
+                      Provider.of<HomeProvider>(context, listen: false)
+                              .cartItemsList
+                              .length
+                              .toString() +
+                          " Items",
                       style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(
                       height: size.height * 0.01,
                     ),
                     Text(
-                      '\$00.00',
+                      '\$ ' +
+                          Provider.of<HomeProvider>(context, listen: true)
+                              .updateItemTotalPrice()
+                              .toString(),
                       style: TextStyle(color: Colors.white),
                     ),
                   ],
@@ -82,7 +97,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => trackorder()),
+                          MaterialPageRoute(builder: (context) => CartScreen()),
                         );
                       },
                       backgroundColor: Color(0xffC70039),
@@ -263,27 +278,32 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                         Row(
                           children: [
-                            Container(
-                              padding: EdgeInsets.all(size.width * 0.02),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.circular(size.width * 0.5),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: Offset(
-                                        0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Image.asset(
-                                "images/calls.png",
-                                color: colorText,
-                                height: size.width * 0.065,
-                                width: size.width * 0.065,
+                            GestureDetector(
+                              onTap: () {
+                                _makePhoneCall('tel:' + widget.store.number);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(size.width * 0.02),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.circular(size.width * 0.5),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 5,
+                                      blurRadius: 7,
+                                      offset: Offset(
+                                          0, 3), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: Image.asset(
+                                  "images/calls.png",
+                                  color: colorText,
+                                  height: size.width * 0.065,
+                                  width: size.width * 0.065,
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -380,168 +400,192 @@ class _ProductScreenState extends State<ProductScreen> {
                       itemCount: collectionProducts == null
                           ? 0
                           : collectionProducts.length,
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: size.width * 0.02),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(
-                                size.width * 0.034,
+                      itemBuilder: (context, index) => Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: size.width * 0.02),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(
+                              size.width * 0.034,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset:
+                                    Offset(1, 0), // changes position of shadow
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 5,
-                                  offset: Offset(
-                                      1, 0), // changes position of shadow
+                            ]),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(
+                                  size.width * 0.034,
                                 ),
-                              ]),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(
-                                    size.width * 0.034,
+                                bottomLeft: Radius.circular(
+                                  size.width * 0.034,
+                                ),
+                              ),
+                              child: Image.network(
+                                collectionProducts[index].image,
+                                height: size.width * 0.31,
+                                width: size.width * 0.31,
+                                fit: BoxFit.fill,
+                                errorBuilder: (BuildContext context,
+                                    Object exception, StackTrace stackTrace) {
+                                  return Image(
+                                      height: size.width * 0.31,
+                                      width: size.width * 0.31,
+                                      fit: BoxFit.fill,
+                                      image: NetworkImage(
+                                          "https://i2.wp.com/asvs.in/wp-content/uploads/2017/08/dummy.png"));
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              width: size.width * 0.025,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    height: size.width * 0.01,
                                   ),
-                                  bottomLeft: Radius.circular(
-                                    size.width * 0.034,
-                                  ),
-                                ),
-                                child: Image.network(
-                                  collectionProducts[index].image,
-                                  height: size.width * 0.31,
-                                  width: size.width * 0.31,
-                                  fit: BoxFit.fill,
-                                  errorBuilder: (BuildContext context,
-                                      Object exception, StackTrace stackTrace) {
-                                    return Image(
-                                        height: size.width * 0.31,
-                                        width: size.width * 0.31,
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            "https://i2.wp.com/asvs.in/wp-content/uploads/2017/08/dummy.png"));
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                width: size.width * 0.025,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    SizedBox(
-                                      height: size.width * 0.01,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          collectionProducts[index].title,
-                                          style: TextStyle(
-                                            color: colorBlack,
-                                            fontSize: size.width * 0.039,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          height: size.width * 0.085,
-                                          width: size.width * 0.085,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      size.width * 0.02),
-                                              color: colorText),
-                                          child: Center(
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.favorite_border,
-                                                color: Colors.white,
-                                                size: size.width * 0.045,
-                                              ),
-                                              onPressed: () {},
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: size.width * 0.03,
-                                        )
-                                      ],
-                                    ),
-                                    // SizedBox(
-                                    //   height: size.height * 0.01,
-                                    // ),
-                                    Container(
-                                      width: size.width * 0.4,
-                                      child: Text(
-                                        collectionProducts[index].description,
+                                  Row(
+                                    children: [
+                                      Text(
+                                        collectionProducts[index].title,
                                         style: TextStyle(
                                           color: colorBlack,
-                                          fontSize: size.width * 0.029,
+                                          fontSize: size.width * 0.039,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: size.height * 0.01,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "\$" +
-                                              collectionProducts[index].price,
-                                          style: TextStyle(
-                                            color: colorPrimary,
-                                            fontSize: size.width * 0.039,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        Container(
-                                          height: size.width * 0.085,
-                                          width: size.width * 0.1,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      size.width * 0.02),
-                                              color: colorText),
-                                          child: Center(
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: size.width * 0.045,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProductDetailsScreen(
-                                                              product:
-                                                                  collectionProducts[
-                                                                      index],
-                                                            )));
-                                              },
+                                      Spacer(),
+                                      Container(
+                                        height: size.width * 0.085,
+                                        width: size.width * 0.085,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                size.width * 0.02),
+                                            color: collectionProducts[index]
+                                                        .isFavourite ==
+                                                    0
+                                                ? colorText
+                                                : Colors.white),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: Icon(
+                                              collectionProducts[index]
+                                                          .isFavourite ==
+                                                      0
+                                                  ? Icons.favorite_border
+                                                  : Icons.favorite,
+                                              color: collectionProducts[index]
+                                                          .isFavourite ==
+                                                      0
+                                                  ? Colors.white
+                                                  : colorText,
+                                              size: size.width * 0.045,
                                             ),
+                                            onPressed: () {
+                                              setState(() {
+                                                collectionProducts[index]
+                                                            .isFavourite ==
+                                                        1
+                                                    ? collectionProducts[index]
+                                                        .isFavourite = 0
+                                                    : collectionProducts[index]
+                                                        .isFavourite = 1;
+                                              });
+
+                                              Provider.of<HomeProvider>(context,
+                                                      listen: false)
+                                                  .callAPIFavrt(
+                                                      context: context,
+                                                      product:
+                                                          collectionProducts[
+                                                              index]);
+                                            },
                                           ),
                                         ),
-                                        SizedBox(
-                                          width: size.width * 0.04,
+                                      ),
+                                      SizedBox(
+                                        width: size.width * 0.03,
+                                      )
+                                    ],
+                                  ),
+                                  // SizedBox(
+                                  //   height: size.height * 0.01,
+                                  // ),
+                                  Container(
+                                    width: size.width * 0.4,
+                                    child: Text(
+                                      collectionProducts[index].description,
+                                      style: TextStyle(
+                                        color: colorBlack,
+                                        fontSize: size.width * 0.029,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "\$" + collectionProducts[index].price,
+                                        style: TextStyle(
+                                          color: colorPrimary,
+                                          fontSize: size.width * 0.039,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: size.width * 0.01,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        height: size.width * 0.085,
+                                        width: size.width * 0.1,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                size.width * 0.02),
+                                            color: colorText),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.add,
+                                              color: Colors.white,
+                                              size: size.width * 0.045,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ProductDetailsScreen(
+                                                            product:
+                                                                collectionProducts[
+                                                                    index],
+                                                          )));
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: size.width * 0.04,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: size.width * 0.01,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
                         ),
                       ),
                     )

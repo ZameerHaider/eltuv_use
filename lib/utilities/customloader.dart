@@ -1,3 +1,4 @@
+import 'package:eltuv_use/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class CustomLoader extends StatelessWidget {
@@ -5,7 +6,7 @@ class CustomLoader extends StatelessWidget {
   Color loaderColor;
   final bool isLoading;
   final Widget child;
-  static const Color colorPrimary = Color(0xFF17C5CC);
+  static const Color colorrimary = Color(0xFF17C5CC);
   CustomLoader(
       {this.child,
       this.isLoading = false,

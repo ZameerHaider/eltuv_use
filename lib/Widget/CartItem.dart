@@ -158,15 +158,18 @@ class _CartItemState extends State<CartItem> {
                             color: Colors.grey.withOpacity(0.4),
                           ),
                           child: Center(
-                            child: Text(
-                              widget.prod.quantity.toString(),
-                              // Provider.of<HomeProvider>(context, listen: true)
-                              //     .totalQuantity
-                              //     .toString(),
-                              style: TextStyle(
-                                  fontSize: size.width * 0.034,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                            child: Consumer<HomeProvider>(
+                                builder: (context, cart, child) {
+                              return Text(
+                                widget.prod.quantity.toString(),
+                                // Provider.of<HomeProvider>(context, listen: true)
+                                //     .totalQuantity
+                                //     .toString(),
+                                style: TextStyle(
+                                    fontSize: size.width * 0.034,
+                                    fontWeight: FontWeight.bold),
+                              );
+                            }),
                           ),
                         ),
                         // CustomTextField(

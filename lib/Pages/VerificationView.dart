@@ -141,12 +141,10 @@ class _VerificationViewState extends State<VerificationView> {
 
       print("printing firebase user  " + _firebaseUser.toString());
 
-      HelperFunctions.saveInPreference(
-          "firebaseUId", _firebaseUser.uid.toString());
+      // HelperFunctions.saveInPreference(
+      //     "firebaseUId", _firebaseUser.uid.toString());
       HelperFunctions.saveInPreference(
           "firebasePhone", _firebaseUser.phoneNumber.toString());
-      HelperFunctions.getFromPreference("firebaseUId")
-          .then((value) => print("printing firebase User ID" + value));
     }).catchError((e) => _handleError(e));
     setState(() {
       _status += 'Signed In\n';
@@ -192,6 +190,13 @@ class _VerificationViewState extends State<VerificationView> {
       bool status = response['status'];
       if (status == true) {
         checkUser = CheckUser.fromMap(response);
+        HelperFunctions.saveInPreference("userFname", checkUser.user.firstName);
+        HelperFunctions.saveInPreference("userLname", checkUser.user.lastName);
+        HelperFunctions.saveInPreference("useraddress", checkUser.user.city);
+        HelperFunctions.saveInPreference(
+            "firebaseUId", checkUser.user.id.toString());
+        HelperFunctions.getFromPreference("firebaseUId")
+            .then((value) => print("printing firebase User ID" + value));
         if (checkUser.message.account == 1) {
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => HomeScreen()),

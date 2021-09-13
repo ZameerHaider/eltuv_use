@@ -211,6 +211,7 @@ class CollectionProduct {
     this.optional,
     this.createdAt,
     this.updatedAt,
+    this.isFavourite,
     this.productOptional,
     this.quantity = 1,
   });
@@ -227,6 +228,7 @@ class CollectionProduct {
   DateTime createdAt;
   DateTime updatedAt;
   int quantity;
+  int isFavourite;
   List<ProductOptional> productOptional;
 
   factory CollectionProduct.fromMap(Map<String, dynamic> json) =>
@@ -246,6 +248,7 @@ class CollectionProduct {
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
+        isFavourite: json["isFavourite"] == null ? null : json["isFavourite"],
         productOptional: json["product_optional"] == null
             ? null
             : List<ProductOptional>.from(json["product_optional"]
@@ -307,37 +310,43 @@ class EnumValues<T> {
 class HomeProvider with ChangeNotifier {
   HomeObject homeObject;
   Response apisnapShot;
+  bool isLoading = false;
 
   callAPIGetHome(BuildContext context) {
-    Map<String, dynamic> body = Map<String, dynamic>();
+    isLoading = true;
+    HelperFunctions.getFromPreference("firebaseUId").then((firebaseUserId) {
+      Map<String, dynamic> body = Map<String, dynamic>();
 
-    Map<String, String> header = Map<String, String>();
+      Map<String, String> header = Map<String, String>();
 
-    FocusScope.of(context).requestFocus(FocusNode());
-    log(jsonEncode(body));
+      FocusScope.of(context).requestFocus(FocusNode());
+      log(jsonEncode(body));
 
-    ApiManager networkCal = ApiManager(APIConstants.home, body, false, header);
+      ApiManager networkCal =
+          ApiManager(APIConstants.home + firebaseUserId, body, false, header);
 
-    networkCal.callGetAPI(context).then((response) {
-      print('Back from api');
+      networkCal.callGetAPI(context).then((response) {
+        print('Back from api');
+        isLoading = false;
 
-      bool status = response['status'];
-      if (status == true) {
-        homeObject = HomeObject.fromMap(response);
-        if (homeObject != null) {
-          apisnapShot = homeObject.response;
+        bool status = response['status'];
+        if (status == true) {
+          homeObject = HomeObject.fromMap(response);
+          if (homeObject != null) {
+            apisnapShot = homeObject.response;
+          }
+        } else {
+          HelperFunctions.showAlert(
+            context: context,
+            header: "Eltuv",
+            widget: Text(response["message"]),
+            btnDoneText: "ok",
+            onDone: () {},
+            onCancel: () {},
+          );
         }
-      } else {
-        HelperFunctions.showAlert(
-          context: context,
-          header: "Eltuv",
-          widget: Text(response["message"]),
-          btnDoneText: "ok",
-          onDone: () {},
-          onCancel: () {},
-        );
-      }
-      notifyListeners();
+        notifyListeners();
+      });
     });
   }
 
@@ -351,6 +360,7 @@ class HomeProvider with ChangeNotifier {
           label: 'undo',
           onPressed: () {
             cartItemsList.removeWhere((element) => element.id == product.id);
+            updateItemTotalPrice();
           },
         ),
       );
@@ -358,6 +368,7 @@ class HomeProvider with ChangeNotifier {
       ScaffoldMessenger.of(context).showSnackBar(snackBars);
     } else {
       cartItemsList.add(product);
+      updateItemTotalPrice();
       final snackBar = SnackBar(
         content: const Text('Item  added to cart'),
         action: SnackBarAction(
@@ -365,7 +376,7 @@ class HomeProvider with ChangeNotifier {
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => CartScreen(
-                      collectionProduct: cartItemsList,
+                    // collectionProduct: cartItemsList,
                     )));
           },
         ),
@@ -386,7 +397,8 @@ class HomeProvider with ChangeNotifier {
     });
 
     log("total amount " + totalAmount.toString());
-    notifyListeners();
+
+    // notifyListeners();
     return totalAmount;
   }
 
@@ -396,19 +408,58 @@ class HomeProvider with ChangeNotifier {
     // product.quantity = totalQuantity;
 
     log(totalQuantity.toString());
+
     updateItemTotalPrice();
     notifyListeners();
   }
 
   decrementProductCount({CollectionProduct product}) {
-    if (totalQuantity > 1) {
+    if (product.quantity > 1) {
       totalQuantity = product.quantity--;
       // product.quantity = totalQuantity;
-      // updateItemTotalPrice();
+
     }
 
     print(totalQuantity);
+    updateItemTotalPrice();
 
+    notifyListeners();
+  }
+
+  callAPIFavrt({BuildContext context, CollectionProduct product}) {
+    Map<String, dynamic> body = Map<String, dynamic>();
+
+    Map<String, String> header = Map<String, String>();
+
+    HelperFunctions.getFromPreference("firebaseUId").then((uid) {
+      body["user_id "] = uid;
+
+      body["product_id"] = product.id;
+
+      FocusScope.of(context).requestFocus(FocusNode());
+      log(jsonEncode(body));
+
+      ApiManager networkCal =
+          ApiManager(APIConstants.updateFavrt, body, false, header);
+
+      networkCal.callGetAPI(context).then((response) {
+        print('Back from api');
+
+        bool status = response['status'];
+        if (status == true) {
+          log(jsonEncode(response));
+        } else {
+          HelperFunctions.showAlert(
+            context: context,
+            header: "Eltuv",
+            widget: Text(response["message"]),
+            btnDoneText: "ok",
+            onDone: () {},
+            onCancel: () {},
+          );
+        }
+      });
+    });
     notifyListeners();
   }
 }
